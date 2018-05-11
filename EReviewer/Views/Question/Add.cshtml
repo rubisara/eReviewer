@@ -53,6 +53,28 @@
 
     <script>
         $(function () {
+            $(document).on("click", "#add-option", function (e) {
+                e.preventDefault();
+
+                var model = {
+                    descr: $("#description").val(),
+                    isAnswer: $("#is-answer").is(":checked"),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Question/AddOption/",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(model),
+                    success: function (result) {
+                        alert('ok');
+                    },
+                    error: function (result) {
+                        alert('error');
+                    }
+                });
+            });
+
             // when the modal is closed
             $('#modal-container').on('hidden.bs.modal', function () {
 

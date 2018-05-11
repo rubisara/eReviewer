@@ -170,7 +170,7 @@ namespace EReviewer.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddOption(QuestionOptionAddVM model)
+        public IActionResult AddOption(string descr, bool isAnswer)
         {
             var options = new List<QuestionOptionViewVM>();
             if (ViewBag.Options == null)
@@ -182,8 +182,8 @@ namespace EReviewer.Controllers
 
             options.Add(new QuestionOptionViewVM
             {
-                Description = model.Description,
-                IsAnswer = model.IsAnswer
+                Description = descr,
+                IsAnswer = isAnswer
             });
 
             ViewBag.Options = options;

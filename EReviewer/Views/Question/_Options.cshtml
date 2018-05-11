@@ -1,11 +1,26 @@
 ﻿@model EReviewer.ViewModels.QuestionViewModels.QuestionOptionAddVM
+
 <div class="form-group">
     <div class="row">
         <label class="col-md-3 col-sm-3 control-label">Options</label>
+    </div>
+    <div class="container col-md-12 col-sm-12">
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control" id="description"/>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="IsAnswer" type="checkbox" id="is-answer"/>
+            <label asp-for="IsAnswer"></label>
+            <span asp-validation-for="IsAnswer" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-default" id="add-option" >Add Option</button>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
-            <div class="form-group">
-                <a data-target="#modal-container" data-toggle="modal" class="btn btn-toolbar">Add Options</a>
-            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -31,4 +46,4 @@
     </div>
 </div>
 
-@await Html.PartialAsync("_OptionsModal")
+@*@await Html.PartialAsync("_OptionsModal")*@
