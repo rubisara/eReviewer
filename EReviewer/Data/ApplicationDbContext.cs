@@ -29,7 +29,17 @@ namespace EReviewer.Data
 
         public DbSet<ExamType> ExamTypes { get; set; }
 
+        public DbSet<Exam> Exams { get; set; }
+
+        public DbSet<ExamDetail> ExamDetails { get; set; }
+
         public DbSet<Question> Questions { get; set; }
+
+        public DbSet<QuestionOption> QuestionOptions { get; set; }
+
+        public DbSet<UserExam> UserExams { get; set; }
+
+        public DbSet<UserExamQuestion> UserExamQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

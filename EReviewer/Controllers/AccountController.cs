@@ -26,7 +26,6 @@ namespace EReviewer.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-        private string id;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,

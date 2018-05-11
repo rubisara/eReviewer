@@ -36,6 +36,7 @@ namespace EReviewer.Models
         [ForeignKey("QuestionOption")]
         public int? AnswerId { get; set; }
 
+        [NotMapped]
         public QuestionOption Answer { get; set; }
 
         public string AnswerText { get; set; }

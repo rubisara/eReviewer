@@ -20,26 +20,6 @@ namespace EReviewer.Migrations
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EReviewer.Models.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AnswerText");
-
-                    b.Property<int>("QuestionId");
-
-                    b.Property<int?>("QuestionOptionId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("QuestionOptionId");
-
-                    b.ToTable("Answer");
-                });
-
             modelBuilder.Entity("EReviewer.Models.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
@@ -98,7 +78,7 @@ namespace EReviewer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exam");
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("EReviewer.Models.ExamDetail", b =>
@@ -118,7 +98,7 @@ namespace EReviewer.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("ExamDetail");
+                    b.ToTable("ExamDetails");
                 });
 
             modelBuilder.Entity("EReviewer.Models.ExamType", b =>
@@ -139,6 +119,10 @@ namespace EReviewer.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AnswerId");
+
+                    b.Property<string>("AnswerText");
+
                     b.Property<int>("ExamTypeId");
 
                     b.Property<int>("Points");
@@ -154,7 +138,7 @@ namespace EReviewer.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("EReviewer.Models.QuestionOption", b =>
@@ -164,13 +148,15 @@ namespace EReviewer.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<bool>("IsAnswer");
+
                     b.Property<int>("QuestionId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionOption");
+                    b.ToTable("QuestionOptions");
                 });
 
             modelBuilder.Entity("EReviewer.Models.Subject", b =>
@@ -211,7 +197,7 @@ namespace EReviewer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserExam");
+                    b.ToTable("UserExams");
                 });
 
             modelBuilder.Entity("EReviewer.Models.UserExamQuestion", b =>
@@ -239,7 +225,7 @@ namespace EReviewer.Migrations
 
                     b.HasIndex("UserExamId");
 
-                    b.ToTable("UserExamQuestion");
+                    b.ToTable("UserExamQuestions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -347,18 +333,6 @@ namespace EReviewer.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("EReviewer.Models.Answer", b =>
-                {
-                    b.HasOne("EReviewer.Models.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("EReviewer.Models.QuestionOption", "QuestionOption")
-                        .WithMany()
-                        .HasForeignKey("QuestionOptionId");
-                });
-
             modelBuilder.Entity("EReviewer.Models.ExamDetail", b =>
                 {
                     b.HasOne("EReviewer.Models.Exam", "Exam")
@@ -388,7 +362,7 @@ namespace EReviewer.Migrations
             modelBuilder.Entity("EReviewer.Models.QuestionOption", b =>
                 {
                     b.HasOne("EReviewer.Models.Question", "Question")
-                        .WithMany("QuestionOptions")
+                        .WithMany("Options")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -25,7 +25,7 @@ namespace EReviewer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exam",
+                name: "Exams",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -38,7 +38,7 @@ namespace EReviewer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exam", x => x.Id);
+                    table.PrimaryKey("PK_Exams", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -112,7 +112,7 @@ namespace EReviewer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExamDetail",
+                name: "ExamDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -123,15 +123,15 @@ namespace EReviewer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExamDetail", x => x.Id);
+                    table.PrimaryKey("PK_ExamDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExamDetail_Exam_ExamId",
+                        name: "FK_ExamDetails_Exams_ExamId",
                         column: x => x.ExamId,
-                        principalTable: "Exam",
+                        principalTable: "Exams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExamDetail_Subjects_SubjectId",
+                        name: "FK_ExamDetails_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -139,11 +139,13 @@ namespace EReviewer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
+                name: "Questions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AnswerId = table.Column<int>(nullable: true),
+                    AnswerText = table.Column<string>(nullable: true),
                     ExamTypeId = table.Column<int>(nullable: false),
                     Points = table.Column<int>(nullable: false),
                     QuestionText = table.Column<string>(nullable: false),
@@ -151,15 +153,15 @@ namespace EReviewer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Question", x => x.Id);
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Question_ExamTypes_ExamTypeId",
+                        name: "FK_Questions_ExamTypes_ExamTypeId",
                         column: x => x.ExamTypeId,
                         principalTable: "ExamTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Question_Subjects_SubjectId",
+                        name: "FK_Questions_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -252,7 +254,7 @@ namespace EReviewer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserExam",
+                name: "UserExams",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -265,15 +267,15 @@ namespace EReviewer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserExam", x => x.Id);
+                    table.PrimaryKey("PK_UserExams", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserExam_Exam_ExamId",
+                        name: "FK_UserExams_Exams_ExamId",
                         column: x => x.ExamId,
-                        principalTable: "Exam",
+                        principalTable: "Exams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserExam_Users_UserId",
+                        name: "FK_UserExams_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -281,54 +283,28 @@ namespace EReviewer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionOption",
+                name: "QuestionOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Description = table.Column<string>(nullable: true),
+                    IsAnswer = table.Column<bool>(nullable: false),
                     QuestionId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionOption", x => x.Id);
+                    table.PrimaryKey("PK_QuestionOptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuestionOption_Question_QuestionId",
+                        name: "FK_QuestionOptions_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Question",
+                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answer",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AnswerText = table.Column<string>(nullable: true),
-                    QuestionId = table.Column<int>(nullable: false),
-                    QuestionOptionId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Answer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Answer_Question_QuestionId",
-                        column: x => x.QuestionId,
-                        principalTable: "Question",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Answer_QuestionOption_QuestionOptionId",
-                        column: x => x.QuestionOptionId,
-                        principalTable: "QuestionOption",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserExamQuestion",
+                name: "UserExamQuestions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -342,36 +318,26 @@ namespace EReviewer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserExamQuestion", x => x.Id);
+                    table.PrimaryKey("PK_UserExamQuestions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserExamQuestion_Question_QuestionId",
+                        name: "FK_UserExamQuestions_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Question",
+                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserExamQuestion_QuestionOption_QuestionOptionId",
+                        name: "FK_UserExamQuestions_QuestionOptions_QuestionOptionId",
                         column: x => x.QuestionOptionId,
-                        principalTable: "QuestionOption",
+                        principalTable: "QuestionOptions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserExamQuestion_UserExam_UserExamId",
+                        name: "FK_UserExamQuestions_UserExams_UserExamId",
                         column: x => x.UserExamId,
-                        principalTable: "UserExam",
+                        principalTable: "UserExams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Answer_QuestionId",
-                table: "Answer",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Answer_QuestionOptionId",
-                table: "Answer",
-                column: "QuestionOptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -401,54 +367,54 @@ namespace EReviewer.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExamDetail_ExamId",
-                table: "ExamDetail",
+                name: "IX_ExamDetails_ExamId",
+                table: "ExamDetails",
                 column: "ExamId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExamDetail_SubjectId",
-                table: "ExamDetail",
+                name: "IX_ExamDetails_SubjectId",
+                table: "ExamDetails",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Question_ExamTypeId",
-                table: "Question",
+                name: "IX_QuestionOptions_QuestionId",
+                table: "QuestionOptions",
+                column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_ExamTypeId",
+                table: "Questions",
                 column: "ExamTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Question_SubjectId",
-                table: "Question",
+                name: "IX_Questions_SubjectId",
+                table: "Questions",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionOption_QuestionId",
-                table: "QuestionOption",
+                name: "IX_UserExamQuestions_QuestionId",
+                table: "UserExamQuestions",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserExam_ExamId",
-                table: "UserExam",
-                column: "ExamId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserExam_UserId",
-                table: "UserExam",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserExamQuestion_QuestionId",
-                table: "UserExamQuestion",
-                column: "QuestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserExamQuestion_QuestionOptionId",
-                table: "UserExamQuestion",
+                name: "IX_UserExamQuestions_QuestionOptionId",
+                table: "UserExamQuestions",
                 column: "QuestionOptionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserExamQuestion_UserExamId",
-                table: "UserExamQuestion",
+                name: "IX_UserExamQuestions_UserExamId",
+                table: "UserExamQuestions",
                 column: "UserExamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExams_ExamId",
+                table: "UserExams",
+                column: "ExamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExams_UserId",
+                table: "UserExams",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -466,9 +432,6 @@ namespace EReviewer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Answer");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -484,25 +447,25 @@ namespace EReviewer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ExamDetail");
+                name: "ExamDetails");
 
             migrationBuilder.DropTable(
-                name: "UserExamQuestion");
+                name: "UserExamQuestions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "QuestionOption");
+                name: "QuestionOptions");
 
             migrationBuilder.DropTable(
-                name: "UserExam");
+                name: "UserExams");
 
             migrationBuilder.DropTable(
-                name: "Question");
+                name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Exam");
+                name: "Exams");
 
             migrationBuilder.DropTable(
                 name: "Users");

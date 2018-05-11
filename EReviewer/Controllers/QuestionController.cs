@@ -14,6 +14,8 @@ namespace EReviewer.Controllers
     public class QuestionController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private const string _identification = "Identification";
+        private const string _multipleChoice = "Multiple Choice";
 
         public QuestionController(ApplicationDbContext context)
         {
@@ -24,7 +26,7 @@ namespace EReviewer.Controllers
         public async Task<IActionResult> Index()
         {
             var model = new List<QuestionViewVM>();
-            model = await _context.Question.Include(q => q.ExamType).Include(q => q.Subject).Select(q => new QuestionViewVM()
+            model = await _context.Questions.Include(q => q.ExamType).Include(q => q.Subject).Select(q => new QuestionViewVM()
             {
                 Subject = q.Subject.Name,
                 ExamType = q.ExamType.Name,
@@ -50,7 +52,7 @@ namespace EReviewer.Controllers
                 return NotFound();
             }
 
-            var question = await _context.Question
+            var question = await _context.Questions
                 .Include(q => q.ExamType)
                 .Include(q => q.Subject)
                 .SingleOrDefaultAsync(m => m.Id == id);
@@ -74,6 +76,31 @@ namespace EReviewer.Controllers
             };
 
             return View(model);
+        }
+
+        // GET: Question/ExamType
+        public IActionResult ExamType(int? id)
+        {
+            if (id == null)
+            {
+                return PartialView();
+            }
+
+            var examTypeName = _context.ExamTypes.FirstOrDefault(et => et.Id == id);
+
+            if (examTypeName == null)
+                return PartialView();
+
+            switch (examTypeName.Name)
+            {
+                case _identification:
+                    return PartialView("_Input");
+                case _multipleChoice:
+                    var model = new QuestionOptionAddVM();
+                    return PartialView("_Options", model);
+                default:
+                    return PartialView();
+            }
         }
 
         // GET: Question/Add
@@ -137,63 +164,31 @@ namespace EReviewer.Controllers
             return View(model);
         }
 
-        // GET: Question/AddOptions
-        public IActionResult AddOptions()
-        {
-            var model = new QuestionAddVM()
-            {
-                ExamTypes = new SelectList(_context.ExamTypes, "Id", "Name"),
-                Subjects = new SelectList(_context.Subjects, "Id", "Name")
-            };
-
-            return View(model);
-        }
 
         // POST: Question/AddOptions
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOptions(QuestionAddVM model)
+        public IActionResult AddOption(QuestionOptionAddVM model)
         {
-            if (ModelState.IsValid)
+            var options = new List<QuestionOptionViewVM>();
+            if (ViewBag.Options == null)
             {
-                //var options = new List<QuestionOption>();
-                //foreach (var item in model.Options)
-                //{
-                //    options.Add(new QuestionOption()
-                //    {
-                //        Description = item.Description,
-                //        IsAnswer = item.IsAnswer
-                //    });
-                //}
-
-                var question = new Question
-                {
-                    ExamTypeId = model.ExamTypeId,
-                    SubjectId = model.ExamTypeId,
-                    QuestionText = model.Question,
-                    Points = model.Points,
-                    AnswerText = model.Answer,
-                    //QuestionOptions = options,
-                    Options = model.Options.Select(opt => new QuestionOption()
-                    {
-                        Description = opt.Description,
-                        IsAnswer = opt.IsAnswer
-                    }).ToList()
-                };
-
-                _context.Add(question);
-
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                options = new List<QuestionOptionViewVM>();
             }
 
-            model.ExamTypes = new SelectList(_context.ExamTypes, "Id", "Name", model.ExamTypeId);
-            model.Subjects = new SelectList(_context.Subjects, "Id", "Name", model.SubjectId);
+            options = ViewBag.Options;
 
-            return View(model);
+            options.Add(new QuestionOptionViewVM
+            {
+                Description = model.Description,
+                IsAnswer = model.IsAnswer
+            });
+
+            ViewBag.Options = options;
+
+            return View();
         }
 
         // GET: Question/Edit/5
@@ -204,7 +199,7 @@ namespace EReviewer.Controllers
                 return NotFound();
             }
 
-            var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == id);
+            var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == id);
             if (question == null)
             {
                 return NotFound();
@@ -250,7 +245,7 @@ namespace EReviewer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == model.Id);
+                var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == model.Id);
 
                 try
                 {
@@ -311,7 +306,7 @@ namespace EReviewer.Controllers
                 return NotFound();
             }
 
-            var question = await _context.Question
+            var question = await _context.Questions
                 .Include(q => q.ExamType)
                 .Include(q => q.Subject)
                 .SingleOrDefaultAsync(m => m.Id == id);
@@ -342,9 +337,9 @@ namespace EReviewer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == id);
+            var question = await _context.Questions.SingleOrDefaultAsync(m => m.Id == id);
 
-            _context.Question.Remove(question);
+            _context.Questions.Remove(question);
 
             await _context.SaveChangesAsync();
 
@@ -353,7 +348,7 @@ namespace EReviewer.Controllers
 
         private bool QuestionExists(int id)
         {
-            return _context.Question.Any(e => e.Id == id);
+            return _context.Questions.Any(e => e.Id == id);
         }
     }
 }

@@ -7,16 +7,23 @@
 <h3>@ViewData["Title"]</h3>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form>
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Subjects" class="control-label"></label>
-                <select asp-for="Subjects" class="form-control" asp-items="@Model.Subjects"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ExamTypes" class="control-label"></label>
-                <select asp-for="ExamTypes" class="form-control" asp-items="@Model.ExamTypes"></select>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Subjects" class="control-label"></label>
+                        <select asp-for="SubjectId" class="form-control" asp-items="@Model.Subjects"></select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Points" class="control-label"></label>
+                        <input asp-for="Points" class="form-control" />
+                        <span asp-validation-for="Points" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Question" class="control-label"></label>
@@ -24,43 +31,12 @@
                 <span asp-validation-for="Question" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Points" class="control-label"></label>
-                <input asp-for="Points" class="form-control" />
-                <span asp-validation-for="Points" class="text-danger"></span>
+                <label asp-for="ExamTypes" class="control-label"></label>
+                <select asp-for="ExamTypeId" class="form-control" asp-items="@Model.ExamTypes" id="exam-types">
+                    <option selected="selected" disabled hidden>Select Exam Type</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="Answer" class="control-label"></label>
-                <input asp-for="Answer" class="form-control" />
-                <span asp-validation-for="Answer" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <a asp-area="" asp-action="AddOptions" class="btn btn-primary">Add Options</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Description</th>
-                                        <th>Is Answer?</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.Options)
-                                    {
-                                        <tr>
-                                            <td>@item.Description</td>
-                                            <td>@item.IsAnswer</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="exam-types-view"></div>
             <div class="form-group">
                 <input type="submit" value="Submit" class="btn btn-default" />
             </div>
@@ -74,4 +50,38 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(function () {
+            // when the modal is closed
+            $('#modal-container').on('hidden.bs.modal', function () {
+
+                // remove the bs.modal data attribute from it
+                $(this).removeData('bs.modal');
+
+                // and empty the modal-content element
+                $('#modal-container .modal-content').empty();
+            });
+
+            // This is change event for your dropdownlist
+            $('#exam-types').change(function () {
+
+                // Get the selected value of dropdownlist
+                var selectedID = $(this).val();
+
+                // Request the partial view with .get request.
+                $.get('/Question/ExamType/' + selectedID, function (data) {
+
+                    // clear
+                    $('#exam-types-view').empty();
+
+                    // data is the pure html returned from action method, load it to your page
+                    $('#exam-types-view').html(data);
+
+                    // little fade in effect
+                    $('#exam-types-view').fadeIn('fast');
+                });
+            });
+        });
+    </script>
 }

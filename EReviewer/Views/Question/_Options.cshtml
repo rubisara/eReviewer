@@ -1,0 +1,34 @@
+﻿@model EReviewer.ViewModels.QuestionViewModels.QuestionOptionAddVM
+<div class="form-group">
+    <div class="row">
+        <label class="col-md-3 col-sm-3 control-label">Options</label>
+        <div class="col-md-12">
+            <div class="form-group">
+                <a data-target="#modal-container" data-toggle="modal" class="btn btn-toolbar">Add Options</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Is Answer?</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Options)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>@item.IsAnswer.ToString()</td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_OptionsModal")

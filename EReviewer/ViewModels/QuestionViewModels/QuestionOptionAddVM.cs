@@ -17,5 +17,12 @@ namespace EReviewer.ViewModels.QuestionViewModels
         [Required]
         [Display(Name = "Is Answer")]
         public bool IsAnswer { get; set; }
+
+        public List<QuestionOptionViewVM> Options { get; set; }
+
+        public QuestionOptionAddVM()
+        {
+            Options = new List<QuestionOptionViewVM>();
+        }
     }
 }
